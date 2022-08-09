@@ -7,6 +7,7 @@ import (
 	"image/color"
 	_ "image/png"
 	"os"
+	"sort"
 )
 
 func main() {
@@ -58,6 +59,7 @@ func export(m matrix) []Pixel {
 		indexes[str] = len(keys)
 		keys = append(keys, str)
 	}
+	sort.Strings(keys)
 
 	current := 0.0
 	for i, str := range keys {

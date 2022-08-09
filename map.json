@@ -4,15 +4,15 @@
     "Density": 0.46484375,
     "NeighbourgsT": [
       {
+        "Index": 0,
+        "Density": 0.8349514563106796
+      },
+      {
         "Index": 1,
-        "Density": 0.14563106796116504
+        "Density": 0.9805825242718447
       },
       {
         "Index": 2,
-        "Density": 0.1650485436893204
-      },
-      {
-        "Index": 0,
         "Density": 1
       }
     ],
@@ -60,19 +60,19 @@
     "Density": 0.90625,
     "NeighbourgsT": [
       {
+        "Index": 0,
+        "Density": 0.1504424778761062
+      },
+      {
         "Index": 1,
-        "Density": 0.7522123893805309
+        "Density": 0.9026548672566371
       },
       {
         "Index": 2,
-        "Density": 0.7876106194690266
+        "Density": 0.9380530973451328
       },
       {
         "Index": 4,
-        "Density": 0.8495575221238938
-      },
-      {
-        "Index": 0,
         "Density": 1
       }
     ],
@@ -96,19 +96,19 @@
     ],
     "NeighbourgsL": [
       {
-        "Index": 0,
-        "Density": 0.1504424778761062
-      },
-      {
         "Index": 1,
-        "Density": 0.8938053097345132
+        "Density": 0.7433628318584071
       },
       {
         "Index": 2,
-        "Density": 0.9380530973451328
+        "Density": 0.7876106194690266
       },
       {
         "Index": 4,
+        "Density": 0.8495575221238938
+      },
+      {
+        "Index": 0,
         "Density": 1
       }
     ],
@@ -136,11 +136,29 @@
     "Density": 0.96875,
     "NeighbourgsT": [
       {
-        "Index": 3,
-        "Density": 0.0625
+        "Index": 1,
+        "Density": 0.375
       },
       {
+        "Index": 2,
+        "Density": 0.9375
+      },
+      {
+        "Index": 3,
+        "Density": 1
+      }
+    ],
+    "NeighbourgsB": [
+      {
         "Index": 1,
+        "Density": 0.25
+      },
+      {
+        "Index": 0,
+        "Density": 0.375
+      },
+      {
+        "Index": 3,
         "Density": 0.4375
       },
       {
@@ -148,39 +166,21 @@
         "Density": 1
       }
     ],
-    "NeighbourgsB": [
-      {
-        "Index": 2,
-        "Density": 0.5625
-      },
-      {
-        "Index": 1,
-        "Density": 0.8125
-      },
-      {
-        "Index": 0,
-        "Density": 0.9375
-      },
-      {
-        "Index": 3,
-        "Density": 1
-      }
-    ],
     "NeighbourgsL": [
       {
-        "Index": 2,
-        "Density": 0.5
-      },
-      {
-        "Index": 0,
-        "Density": 0.625
-      },
-      {
         "Index": 3,
-        "Density": 0.6875
+        "Density": 0.0625
       },
       {
         "Index": 1,
+        "Density": 0.375
+      },
+      {
+        "Index": 2,
+        "Density": 0.875
+      },
+      {
+        "Index": 0,
         "Density": 1
       }
     ],
@@ -199,41 +199,13 @@
       },
       {
         "Index": 3,
-        "Density": 1
-      }
-    ]
-  },
-  {
-    "Color": "[255,255,255]",
-    "Density": 0.97265625,
-    "NeighbourgsT": [
-      {
-        "Index": 2,
-        "Density": 1
-      }
-    ],
-    "NeighbourgsB": [
-      {
-        "Index": 2,
-        "Density": 1
-      }
-    ],
-    "NeighbourgsL": [
-      {
-        "Index": 2,
-        "Density": 1
-      }
-    ],
-    "NeighbourgsR": [
-      {
-        "Index": 2,
         "Density": 1
       }
     ]
   },
   {
     "Color": "[255,24,24]",
-    "Density": 1,
+    "Density": 0.99609375,
     "NeighbourgsT": [
       {
         "Index": 1,
@@ -255,6 +227,34 @@
     "NeighbourgsR": [
       {
         "Index": 1,
+        "Density": 1
+      }
+    ]
+  },
+  {
+    "Color": "[255,255,255]",
+    "Density": 1,
+    "NeighbourgsT": [
+      {
+        "Index": 2,
+        "Density": 1
+      }
+    ],
+    "NeighbourgsB": [
+      {
+        "Index": 2,
+        "Density": 1
+      }
+    ],
+    "NeighbourgsL": [
+      {
+        "Index": 2,
+        "Density": 1
+      }
+    ],
+    "NeighbourgsR": [
+      {
+        "Index": 2,
         "Density": 1
       }
     ]
