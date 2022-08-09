@@ -65,69 +65,69 @@ func export(m matrix) []Pixel {
 		current += float64(ngbr.C)
 		out[i].Color = str
 		out[i].Density = current
-		out[i].NeighbourgsT = make([]Neighbourg, len(ngbr.T), len(ngbr.T))
+		out[i].NeighbourgsT = make([]Neighbourg, 0, len(ngbr.T))
 		subcurrent := 0.0
-		j := 0
 		for subStr, count := range ngbr.T {
 			_, ok := indexes[subStr]
 			if !ok {
-				continue // not compatible with the make(something, fixedLen) <= we dont know the len before
+				continue
 			}
 			subcurrent += float64(count)
-			out[i].NeighbourgsT[j].Index = indexes[subStr]
-			out[i].NeighbourgsT[j].Density = subcurrent
-			j++
+			out[i].NeighbourgsT = append(out[i].NeighbourgsT, Neighbourg{
+				Index:   indexes[subStr],
+				Density: subcurrent,
+			})
 		}
 		for j := range out[i].NeighbourgsT {
 			out[i].NeighbourgsT[j].Density /= subcurrent
 		}
 
-		out[i].NeighbourgsB = make([]Neighbourg, len(ngbr.B), len(ngbr.B))
+		out[i].NeighbourgsB = make([]Neighbourg, 0, len(ngbr.B))
 		subcurrent = 0
-		j = 0
 		for subStr, count := range ngbr.B {
 			_, ok := indexes[subStr]
 			if !ok {
 				continue
 			}
 			subcurrent += float64(count)
-			out[i].NeighbourgsB[j].Index = indexes[subStr]
-			out[i].NeighbourgsB[j].Density = subcurrent
-			j++
+			out[i].NeighbourgsB = append(out[i].NeighbourgsB, Neighbourg{
+				Index:   indexes[subStr],
+				Density: subcurrent,
+			})
 		}
 		for j := range out[i].NeighbourgsB {
 			out[i].NeighbourgsB[j].Density /= subcurrent
 		}
 
-		out[i].NeighbourgsL = make([]Neighbourg, len(ngbr.L), len(ngbr.L))
+		out[i].NeighbourgsL = make([]Neighbourg, 0, len(ngbr.L))
 		subcurrent = 0
-		j = 0
 		for subStr, count := range ngbr.L {
 			_, ok := indexes[subStr]
 			if !ok {
 				continue
 			}
 			subcurrent += float64(count)
-			out[i].NeighbourgsL[j].Index = indexes[subStr]
-			out[i].NeighbourgsL[j].Density = subcurrent
-			j++
+			out[i].NeighbourgsL = append(out[i].NeighbourgsL, Neighbourg{
+				Index:   indexes[subStr],
+				Density: subcurrent,
+			})
 		}
 		for j := range out[i].NeighbourgsL {
 			out[i].NeighbourgsL[j].Density /= subcurrent
 		}
 
-		out[i].NeighbourgsR = make([]Neighbourg, len(ngbr.R), len(ngbr.R))
+		out[i].NeighbourgsR = make([]Neighbourg, 0, len(ngbr.R))
 		subcurrent = 0
-		j = 0
 		for subStr, count := range ngbr.R {
 			_, ok := indexes[subStr]
 			if !ok {
 				continue
 			}
 			subcurrent += float64(count)
-			out[i].NeighbourgsR[j].Index = indexes[subStr]
-			out[i].NeighbourgsR[j].Density = subcurrent
-			j++
+			out[i].NeighbourgsR = append(out[i].NeighbourgsR, Neighbourg{
+				Index:   indexes[subStr],
+				Density: subcurrent,
+			})
 		}
 		for j := range out[i].NeighbourgsR {
 			out[i].NeighbourgsR[j].Density /= subcurrent
