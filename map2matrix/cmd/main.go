@@ -15,6 +15,20 @@ func main() {
 	}
 }
 
+type Pixel struct {
+	Color        string
+	Density      float64
+	NeighbourgsT []Neighbourg
+	NeighbourgsB []Neighbourg
+	NeighbourgsL []Neighbourg
+	NeighbourgsR []Neighbourg
+}
+
+type Neighbourg struct {
+	Index   int
+	Density float64
+}
+
 type neighbourg struct {
 	C int
 	T map[string]int
@@ -33,6 +47,98 @@ func newNeighbourg() neighbourg {
 	}
 }
 
+type matrix map[string]neighbourg
+
+func export(m matrix) []Pixel {
+	out := make([]Pixel, len(m), len(m))
+
+	keys := []string{}
+	indexes := map[string]int{}
+	for str := range m {
+		indexes[str] = len(keys)
+		keys = append(keys, str)
+	}
+
+	current := 0.0
+	for i, str := range keys {
+		ngbr := m[str]
+		current += float64(ngbr.C)
+		out[i].Color = str
+		out[i].Density = current
+		out[i].NeighbourgsT = make([]Neighbourg, len(ngbr.T), len(ngbr.T))
+		subcurrent := 0.0
+		j := 0
+		for subStr, count := range ngbr.T {
+			_, ok := indexes[subStr]
+			if !ok {
+				continue // not compatible with the make(something, fixedLen) <= we dont know the len before
+			}
+			subcurrent += float64(count)
+			out[i].NeighbourgsT[j].Index = indexes[subStr]
+			out[i].NeighbourgsT[j].Density = subcurrent
+			j++
+		}
+		for j := range out[i].NeighbourgsT {
+			out[i].NeighbourgsT[j].Density /= subcurrent
+		}
+
+		out[i].NeighbourgsB = make([]Neighbourg, len(ngbr.B), len(ngbr.B))
+		subcurrent = 0
+		j = 0
+		for subStr, count := range ngbr.B {
+			_, ok := indexes[subStr]
+			if !ok {
+				continue
+			}
+			subcurrent += float64(count)
+			out[i].NeighbourgsB[j].Index = indexes[subStr]
+			out[i].NeighbourgsB[j].Density = subcurrent
+			j++
+		}
+		for j := range out[i].NeighbourgsB {
+			out[i].NeighbourgsB[j].Density /= subcurrent
+		}
+
+		out[i].NeighbourgsL = make([]Neighbourg, len(ngbr.L), len(ngbr.L))
+		subcurrent = 0
+		j = 0
+		for subStr, count := range ngbr.L {
+			_, ok := indexes[subStr]
+			if !ok {
+				continue
+			}
+			subcurrent += float64(count)
+			out[i].NeighbourgsL[j].Index = indexes[subStr]
+			out[i].NeighbourgsL[j].Density = subcurrent
+			j++
+		}
+		for j := range out[i].NeighbourgsL {
+			out[i].NeighbourgsL[j].Density /= subcurrent
+		}
+
+		out[i].NeighbourgsR = make([]Neighbourg, len(ngbr.R), len(ngbr.R))
+		subcurrent = 0
+		j = 0
+		for subStr, count := range ngbr.R {
+			_, ok := indexes[subStr]
+			if !ok {
+				continue
+			}
+			subcurrent += float64(count)
+			out[i].NeighbourgsR[j].Index = indexes[subStr]
+			out[i].NeighbourgsR[j].Density = subcurrent
+			j++
+		}
+		for j := range out[i].NeighbourgsR {
+			out[i].NeighbourgsR[j].Density /= subcurrent
+		}
+	}
+	for i := range out {
+		out[i].Density /= current
+	}
+	return out
+}
+
 func run(filename string) error {
 	infile, err := os.Open(filename)
 	if err != nil {
@@ -47,7 +153,7 @@ func run(filename string) error {
 
 	bounds := src.Bounds()
 	w, h := bounds.Max.X, bounds.Max.Y
-	out := map[string]neighbourg{}
+	out := matrix{}
 	for x := 0; x < w; x++ {
 		for y := 0; y < h; y++ {
 			c := colorToString(src.At(x, y))
@@ -85,7 +191,7 @@ func run(filename string) error {
 		}
 	}
 
-	asJson, err := json.MarshalIndent(out, "", "  ")
+	asJson, err := json.MarshalIndent(export(out), "", "  ")
 	if err != nil {
 		return fmt.Errorf("while json encoding result : %w", err)
 	}
