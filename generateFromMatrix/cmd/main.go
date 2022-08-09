@@ -3,9 +3,9 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	// "image"
+	"image"
 	"image/color"
-	_ "image/png"
+	"image/png"
 	"math/rand"
 	"os"
 	"strings"
@@ -23,6 +23,7 @@ type Pickable interface {
 
 type Pixel struct {
 	Color        string
+	color        color.RGBA
 	Density      float64
 	NeighbourgsT Neighbourgs
 	NeighbourgsB Neighbourgs
@@ -88,14 +89,37 @@ func run(filename string, w, h int) error {
 		}
 	}
 
-	fmt.Println(indexes)
+	for i := range pixels {
+		c, err := colorFromString(pixels[i].Color)
+		if err != nil {
+			return fmt.Errorf("cannot decode color %d : %w", i, err)
+		}
+		pixels[i].color = c
+	}
 
-	return nil
+	return pixels.toPng(indexes, w, h)
+
 }
 
 func pick(p Pickable) int {
 	rng := rand.Float64()
 	return p.Pick(rng)
+}
+
+func (ps Pixels) toPng(indexes []int, w, h int) error {
+	outfile, err := os.Create("out.png")
+	if err != nil {
+		return err
+	}
+
+	out := image.NewRGBA(image.Rect(0, 0, w, h))
+	for x := 0; x < w; x++ {
+		for y := 0; y < h; y++ {
+			out.Set(x, y, ps[indexes[x+w*y]].color)
+		}
+	}
+	defer outfile.Close()
+	return png.Encode(outfile, out)
 }
 
 func colorFromString(str string) (color.RGBA, error) {
