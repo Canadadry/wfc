@@ -10,6 +10,13 @@ import (
 	"sort"
 )
 
+const (
+	top    = "top"
+	left   = "left"
+	right  = "right"
+	bottom = "bottom"
+)
+
 func main() {
 	if err := run(os.Args[1]); err != nil {
 		fmt.Println("failed", err)
@@ -19,10 +26,10 @@ func main() {
 type Pixel struct {
 	Color        string
 	Density      float64
-	NeighbourgsT []Neighbourg
-	NeighbourgsB []Neighbourg
-	NeighbourgsL []Neighbourg
-	NeighbourgsR []Neighbourg
+	NeighbourgsT []Neighbourg `json:"NeighbourgsT,omitempty"`
+	NeighbourgsB []Neighbourg `json:"NeighbourgsB,omitempty"`
+	NeighbourgsL []Neighbourg `json:"NeighbourgsL,omitempty"`
+	NeighbourgsR []Neighbourg `json:"NeighbourgsR,omitempty"`
 }
 
 type Neighbourg struct {
@@ -50,20 +57,27 @@ func newNeighbourg() neighbourg {
 
 type matrix map[string]neighbourg
 
-func export(m matrix) []Pixel {
-	out := make([]Pixel, len(m), len(m))
+func export(m matrix) ([]Pixel, error) {
 
-	keys := []string{}
-	indexes := map[string]int{}
+	keys := []string{top, left, right, bottom}
+	indexes := map[string]int{top: 0, left: 1, right: 2, bottom: 3}
 	for str := range m {
 		indexes[str] = len(keys)
 		keys = append(keys, str)
 	}
-	sort.Strings(keys)
+	sort.Strings(keys[4:])
 
+	out := make([]Pixel, len(keys))
+	out[0].Color = top
+	out[1].Color = left
+	out[2].Color = right
+	out[3].Color = bottom
 	current := 0.0
 	for i, str := range keys {
-		ngbr := m[str]
+		ngbr, ok := m[str]
+		if !ok {
+			continue
+		}
 		current += float64(ngbr.C)
 		out[i].Color = str
 		out[i].Density = current
@@ -72,7 +86,7 @@ func export(m matrix) []Pixel {
 		for subStr, count := range ngbr.T {
 			_, ok := indexes[subStr]
 			if !ok {
-				continue
+				return nil, fmt.Errorf("cannot find index of '%s'", subStr)
 			}
 			subcurrent += float64(count)
 			out[i].NeighbourgsT = append(out[i].NeighbourgsT, Neighbourg{
@@ -89,7 +103,7 @@ func export(m matrix) []Pixel {
 		for subStr, count := range ngbr.B {
 			_, ok := indexes[subStr]
 			if !ok {
-				continue
+				return nil, fmt.Errorf("cannot find index of '%s'", subStr)
 			}
 			subcurrent += float64(count)
 			out[i].NeighbourgsB = append(out[i].NeighbourgsB, Neighbourg{
@@ -106,7 +120,7 @@ func export(m matrix) []Pixel {
 		for subStr, count := range ngbr.L {
 			_, ok := indexes[subStr]
 			if !ok {
-				continue
+				return nil, fmt.Errorf("cannot find index of '%s'", subStr)
 			}
 			subcurrent += float64(count)
 			out[i].NeighbourgsL = append(out[i].NeighbourgsL, Neighbourg{
@@ -123,7 +137,7 @@ func export(m matrix) []Pixel {
 		for subStr, count := range ngbr.R {
 			_, ok := indexes[subStr]
 			if !ok {
-				continue
+				return nil, fmt.Errorf("cannot find index of '%s'", subStr)
 			}
 			subcurrent += float64(count)
 			out[i].NeighbourgsR = append(out[i].NeighbourgsR, Neighbourg{
@@ -138,7 +152,7 @@ func export(m matrix) []Pixel {
 	for i := range out {
 		out[i].Density /= current
 	}
-	return out
+	return out, nil
 }
 
 func run(filename string) error {
@@ -165,26 +179,26 @@ func run(filename string) error {
 			}
 			at.C++
 			if x == 0 {
-				at.L["left"] = at.L["left"] + 1
+				at.L[left] = at.L[left] + 1
 			} else {
 				c := colorToString(src.At(x-1, y))
 				at.L[c] = at.L[c] + 1
 			}
 			if x == w-1 {
-				at.R["right"] = at.R["right"] + 1
+				at.R[right] = at.R[right] + 1
 			} else {
 				c := colorToString(src.At(x+1, y))
 				at.R[c] = at.R[c] + 1
 			}
 
 			if y == 0 {
-				at.T["top"] = at.T["top"] + 1
+				at.T[top] = at.T[top] + 1
 			} else {
 				c := colorToString(src.At(x, y-1))
 				at.T[c] = at.T[c] + 1
 			}
 			if y == h-1 {
-				at.B["bottom"] = at.B["bottom"] + 1
+				at.B[bottom] = at.B[bottom] + 1
 			} else {
 				c := colorToString(src.At(x, y+1))
 				at.B[c] = at.B[c] + 1
@@ -193,7 +207,11 @@ func run(filename string) error {
 		}
 	}
 
-	asJson, err := json.MarshalIndent(export(out), "", "  ")
+	exported, err := export(out)
+	if err != nil {
+		return fmt.Errorf("while exporting : %w", err)
+	}
+	asJson, err := json.MarshalIndent(exported, "", "  ")
 	if err != nil {
 		return fmt.Errorf("while json encoding result : %w", err)
 	}

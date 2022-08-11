@@ -1,44 +1,76 @@
 [
   {
+    "Color": "top",
+    "Density": 0
+  },
+  {
+    "Color": "left",
+    "Density": 0
+  },
+  {
+    "Color": "right",
+    "Density": 0
+  },
+  {
+    "Color": "bottom",
+    "Density": 0
+  },
+  {
     "Color": "[0,0,255]",
     "Density": 0.41796875,
     "NeighbourgsT": [
       {
         "Index": 0,
-        "Density": 0.8791208791208791
+        "Density": 0.14953271028037382
       },
       {
-        "Index": 1,
+        "Index": 4,
+        "Density": 0.897196261682243
+      },
+      {
+        "Index": 5,
         "Density": 1
       }
     ],
     "NeighbourgsB": [
       {
-        "Index": 1,
-        "Density": 0.14893617021276595
+        "Index": 5,
+        "Density": 0.1308411214953271
       },
       {
-        "Index": 0,
+        "Index": 4,
+        "Density": 0.8785046728971962
+      },
+      {
+        "Index": 3,
         "Density": 1
       }
     ],
     "NeighbourgsL": [
       {
         "Index": 1,
-        "Density": 0.16483516483516483
+        "Density": 0.14953271028037382
       },
       {
-        "Index": 0,
+        "Index": 4,
+        "Density": 0.8598130841121495
+      },
+      {
+        "Index": 5,
         "Density": 1
       }
     ],
     "NeighbourgsR": [
       {
-        "Index": 0,
-        "Density": 0.8351648351648352
+        "Index": 4,
+        "Density": 0.7102803738317757
       },
       {
-        "Index": 1,
+        "Index": 5,
+        "Density": 0.8504672897196262
+      },
+      {
+        "Index": 2,
         "Density": 1
       }
     ]
@@ -48,52 +80,56 @@
     "Density": 0.8984375,
     "NeighbourgsT": [
       {
-        "Index": 2,
-        "Density": 0.04878048780487805
-      },
-      {
         "Index": 4,
-        "Density": 0.10569105691056911
+        "Density": 0.11382113821138211
       },
       {
-        "Index": 0,
-        "Density": 0.21951219512195122
+        "Index": 5,
+        "Density": 0.8943089430894309
       },
       {
-        "Index": 1,
+        "Index": 6,
+        "Density": 0.943089430894309
+      },
+      {
+        "Index": 8,
         "Density": 1
       }
     ],
     "NeighbourgsB": [
       {
-        "Index": 1,
-        "Density": 0.8
-      },
-      {
-        "Index": 0,
-        "Density": 0.8916666666666667
-      },
-      {
-        "Index": 2,
-        "Density": 0.9416666666666667
-      },
-      {
         "Index": 4,
+        "Density": 0.08943089430894309
+      },
+      {
+        "Index": 6,
+        "Density": 0.13821138211382114
+      },
+      {
+        "Index": 3,
+        "Density": 0.16260162601626016
+      },
+      {
+        "Index": 8,
+        "Density": 0.21951219512195122
+      },
+      {
+        "Index": 5,
         "Density": 1
       }
     ],
     "NeighbourgsL": [
       {
-        "Index": 0,
-        "Density": 0.12195121951219512
+        "Index": 5,
+        "Density": 0.7804878048780488
       },
       {
-        "Index": 1,
-        "Density": 0.9024390243902439
+        "Index": 6,
+        "Density": 0.8211382113821138
       },
       {
-        "Index": 2,
-        "Density": 0.943089430894309
+        "Index": 8,
+        "Density": 0.8780487804878049
       },
       {
         "Index": 4,
@@ -102,19 +138,19 @@
     ],
     "NeighbourgsR": [
       {
-        "Index": 2,
-        "Density": 0.04065040650406504
+        "Index": 5,
+        "Density": 0.7804878048780488
       },
       {
-        "Index": 0,
-        "Density": 0.16260162601626016
+        "Index": 6,
+        "Density": 0.8211382113821138
       },
       {
         "Index": 4,
-        "Density": 0.21951219512195122
+        "Density": 0.943089430894309
       },
       {
-        "Index": 1,
+        "Index": 8,
         "Density": 1
       }
     ]
@@ -124,57 +160,57 @@
     "Density": 0.96875,
     "NeighbourgsT": [
       {
-        "Index": 1,
+        "Index": 5,
         "Density": 0.3333333333333333
       },
       {
-        "Index": 2,
+        "Index": 6,
         "Density": 0.9444444444444444
       },
       {
-        "Index": 3,
+        "Index": 7,
         "Density": 1
       }
     ],
     "NeighbourgsB": [
       {
-        "Index": 1,
+        "Index": 5,
         "Density": 0.3333333333333333
       },
       {
-        "Index": 3,
+        "Index": 7,
         "Density": 0.3888888888888889
       },
       {
-        "Index": 2,
+        "Index": 6,
         "Density": 1
       }
     ],
     "NeighbourgsL": [
       {
-        "Index": 1,
-        "Density": 0.2777777777777778
+        "Index": 6,
+        "Density": 0.6666666666666666
       },
       {
-        "Index": 2,
-        "Density": 0.9444444444444444
+        "Index": 7,
+        "Density": 0.7222222222222222
       },
       {
-        "Index": 3,
+        "Index": 5,
         "Density": 1
       }
     ],
     "NeighbourgsR": [
       {
-        "Index": 2,
+        "Index": 6,
         "Density": 0.6666666666666666
       },
       {
-        "Index": 1,
+        "Index": 5,
         "Density": 0.9444444444444444
       },
       {
-        "Index": 3,
+        "Index": 7,
         "Density": 1
       }
     ]
@@ -184,25 +220,25 @@
     "Density": 0.99609375,
     "NeighbourgsT": [
       {
-        "Index": 1,
+        "Index": 5,
         "Density": 1
       }
     ],
     "NeighbourgsB": [
       {
-        "Index": 1,
+        "Index": 5,
         "Density": 1
       }
     ],
     "NeighbourgsL": [
       {
-        "Index": 1,
+        "Index": 5,
         "Density": 1
       }
     ],
     "NeighbourgsR": [
       {
-        "Index": 1,
+        "Index": 5,
         "Density": 1
       }
     ]
@@ -212,25 +248,25 @@
     "Density": 1,
     "NeighbourgsT": [
       {
-        "Index": 2,
+        "Index": 6,
         "Density": 1
       }
     ],
     "NeighbourgsB": [
       {
-        "Index": 2,
+        "Index": 6,
         "Density": 1
       }
     ],
     "NeighbourgsL": [
       {
-        "Index": 2,
+        "Index": 6,
         "Density": 1
       }
     ],
     "NeighbourgsR": [
       {
-        "Index": 2,
+        "Index": 6,
         "Density": 1
       }
     ]
