@@ -31,6 +31,10 @@ func Process(in io.Reader, out io.Writer, patternSize int) error {
 	bounds := src.Bounds()
 	w, h := bounds.Max.X, bounds.Max.Y
 
+	if patternSize > w || patternSize > h {
+		return fmt.Errorf("pattern size bigger than image (%d,%d) > (%d,%d)", patternSize, patternSize, w, h)
+	}
+
 	result := extract(src, w, h, patternSize)
 
 	enc := json.NewEncoder(out)
@@ -53,8 +57,8 @@ func extract(src PixelGetter, w, h, patternSize int) Result {
 	}
 	colorIndex := ColorIndex{}
 
-	for x := 0; x <= (w - patternSize); x++ {
-		for y := 0; y <= (h - patternSize); y++ {
+	for x := 0; x < w; x++ {
+		for y := 0; y < h; y++ {
 			colorIndex.Add(src.At(x, y))
 		}
 	}
