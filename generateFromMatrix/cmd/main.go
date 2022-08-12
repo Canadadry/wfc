@@ -1,137 +1,55 @@
 package main
 
 import (
-	"encoding/json"
+	"app/generateFromMatrix"
+	"flag"
 	"fmt"
-	"image"
-	"image/color"
-	"image/png"
-	"math/rand"
 	"os"
-	"strings"
 )
 
 func main() {
-	if err := run(os.Args[1], 32, 24); err != nil {
+	if err := run(os.Args[0], os.Args[1:]); err != nil {
 		fmt.Println("failed", err)
 	}
 }
 
-type Pickable interface {
-	Pick(p float64) int
-}
+func run(name string, args []string) error {
+	constrainFile := "in.json"
+	outFilename := "out.pg"
+	patternSize := 1
+	w := 32
+	h := 24
 
-type Pixel struct {
-	Color        string
-	color        color.RGBA
-	Density      float64
-	NeighbourgsT Neighbourgs
-	NeighbourgsB Neighbourgs
-	NeighbourgsL Neighbourgs
-	NeighbourgsR Neighbourgs
-}
+	f := flag.NewFlagSet(name, flag.ContinueOnError)
 
-type Pixels []Pixel
+	f.StringVar(&constrainFile, "in", constrainFile, "constraint to use for image generation")
+	f.StringVar(&outFilename, "out", outFilename, "out image")
+	f.IntVar(&patternSize, "pattern-size", patternSize, "size of pattern to extract")
+	f.IntVar(&patternSize, "size", patternSize, "size of pattern to extract")
+	f.IntVar(&w, "w", w, "width of generated image")
+	f.IntVar(&h, "h", h, "width of generated image")
 
-func (ps Pixels) Pick(probability float64) int {
-	for i, pix := range ps {
-		if pix.Density > probability {
-			return i
-		}
+	err := f.Parse(args)
+	if err != nil {
+		return err
 	}
-	return len(ps) - 1
-}
 
-type Neighbourg struct {
-	Index   int
-	Density float64
-}
-
-type Neighbourgs []Neighbourg
-
-func (ps Neighbourgs) Pick(probability float64) int {
-	for i, pix := range ps {
-		if pix.Density > probability {
-			return i
-		}
-	}
-	return len(ps) - 1
-}
-
-func run(filename string, w, h int) error {
-	infile, err := os.Open(filename)
+	infile, err := os.Open(constrainFile)
 	if err != nil {
 		return err
 	}
 	defer infile.Close()
 
-	pixels := Pixels{}
-	err = json.NewDecoder(infile).Decode(&pixels)
+	outfile, err := os.Create(outFilename)
 	if err != nil {
 		return err
 	}
+	defer infile.Close()
 
-	indexes := make([]int, w*h)
-
-	for i := 0; i < w; i++ {
-		for j := 0; j < h; j++ {
-			if i > 0 {
-				leftIndex := indexes[i-1+w*j]
-				indexes[i+w*j] = pick(pixels[leftIndex].NeighbourgsR)
-			} else {
-				if j > 0 {
-					leftIndex := indexes[w*(j-1)]
-					indexes[i+w*j] = pick(pixels[leftIndex].NeighbourgsR)
-				} else {
-					indexes[i+w*j] = pick(pixels)
-				}
-			}
-		}
-	}
-
-	for i := range pixels {
-		c, err := colorFromString(pixels[i].Color)
-		if err != nil {
-			return fmt.Errorf("cannot decode color %d : %w", i, err)
-		}
-		pixels[i].color = c
-	}
-
-	return pixels.toPng(indexes, w, h)
-
-}
-
-func pick(p Pickable) int {
-	rng := rand.Float64()
-	return p.Pick(rng)
-}
-
-func (ps Pixels) toPng(indexes []int, w, h int) error {
-	outfile, err := os.Create("out.png")
+	err = generateFromMatrix.Process(infile, outfile, patternSize)
 	if err != nil {
-		return err
+		return fmt.Errorf("processing image : %w", err)
 	}
 
-	out := image.NewRGBA(image.Rect(0, 0, w, h))
-	for x := 0; x < w; x++ {
-		for y := 0; y < h; y++ {
-			out.Set(x, y, ps[indexes[x+w*y]].color)
-		}
-	}
-	defer outfile.Close()
-	return png.Encode(outfile, out)
-}
-
-func colorFromString(str string) (color.RGBA, error) {
-	c := [3]int{}
-	err := json.NewDecoder(strings.NewReader(str)).Decode(&c)
-	if err != nil {
-		return color.RGBA{}, err
-	}
-	return color.RGBA{
-		R: uint8(c[0]),
-		G: uint8(c[1]),
-		B: uint8(c[2]),
-		A: 255,
-	}, nil
+	return nil
 }
