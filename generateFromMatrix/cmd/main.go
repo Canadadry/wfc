@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"time"
 )
 
 func main() {
@@ -15,10 +16,11 @@ func main() {
 
 func run(name string, args []string) error {
 	constrainFile := "in.json"
-	outFilename := "out.pg"
+	outFilename := "out.png"
 	patternSize := 1
 	w := 32
 	h := 24
+	seed := 0
 
 	f := flag.NewFlagSet(name, flag.ContinueOnError)
 
@@ -27,7 +29,8 @@ func run(name string, args []string) error {
 	f.IntVar(&patternSize, "pattern-size", patternSize, "size of pattern to extract")
 	f.IntVar(&patternSize, "size", patternSize, "size of pattern to extract")
 	f.IntVar(&w, "w", w, "width of generated image")
-	f.IntVar(&h, "h", h, "width of generated image")
+	f.IntVar(&h, "h", h, "heght of generated image")
+	f.IntVar(&seed, "seed", seed, "seed for random generator, if 0 use number of second since 1 jan 1970")
 
 	err := f.Parse(args)
 	if err != nil {
@@ -46,7 +49,11 @@ func run(name string, args []string) error {
 	}
 	defer infile.Close()
 
-	err = generateFromMatrix.Process(infile, outfile, patternSize)
+	if seed == 0 {
+		seed = int(time.Now().Unix())
+	}
+
+	err = generateFromMatrix.Process(infile, outfile, patternSize, w, h, seed)
 	if err != nil {
 		return fmt.Errorf("processing image : %w", err)
 	}

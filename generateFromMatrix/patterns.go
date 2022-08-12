@@ -1,14 +1,9 @@
 package generateFromMatrix
 
 import (
+	"encoding/json"
 	"fmt"
-	"image"
-	"image/color"
-	"image/png"
-	"io"
 	"math/rand"
-	"os"
-	"strings"
 )
 
 type Patterns struct {
@@ -20,7 +15,7 @@ type Patterns struct {
 func (p *Patterns) load(patterns map[string]int) {
 	if p.Patterns == nil {
 		p.Patterns = make([]string, len(patterns))
-		p.Density = make([]float64, len(patterns))
+		p.Count = make([]int, len(patterns))
 	}
 
 	i := 0
@@ -42,27 +37,41 @@ func (p *Patterns) remove(i int) error {
 
 	p.Patterns = p.Patterns[0 : len(p.Patterns)-1]
 	p.Count = p.Count[0 : len(p.Count)-1]
+	return nil
 }
 
-func (p *Patterns) Pick() (string, error) {
+func (p *Patterns) Pick() ([]int, error) {
 	rng := rand.Float64()
 	i, err := p.pick(rng)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	return p.Patterns[i], p.remove(i)
+	ret, err := explode(p.Patterns[i])
+	if err != nil {
+		return ret, err
+	}
+	return ret, p.remove(i)
+}
+
+func explode(p string) ([]int, error) {
+	out := []int{}
+	err := json.Unmarshal([]byte(p), &out)
+	return out, err
 }
 
 func (p Patterns) pick(rng float64) (int, error) {
+	// fmt.Println("pick")
+	rng = rng * float64(p.Total)
 	if len(p.Count) == 0 {
 		return 0, fmt.Errorf("nothing left to pick")
 	}
-	current := 0
+	current := 0.0
 	for i, c := range p.Count {
-		current = current + c
-		if current > rng*p.Total {
+		// fmt.Println(current, p.Total)
+		current = current + float64(c)
+		if current > rng {
 			return i, nil
 		}
 	}
-	return 0, fmt.Errorf("pick with %d(%v) out of bound [0:%d]", p.Count*rng, rng, p.Count)
+	return 0, fmt.Errorf("pick with %v out of bound [0:%d]", rng, p.Total)
 }

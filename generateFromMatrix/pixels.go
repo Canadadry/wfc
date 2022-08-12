@@ -1,25 +1,24 @@
 package generateFromMatrix
 
 import (
+	"encoding/json"
 	"fmt"
 	"image"
 	"image/color"
 	"image/png"
 	"io"
-	"math/rand"
-	"os"
 	"strings"
 )
 
-type Pixels map[string]color.RGBA
+type Pixels map[int]color.RGBA
 
 func (ps Pixels) load(indexes []string) error {
-	for i := range indexes {
-		c, err := colorFromString(indexes[i].Color)
+	for i, str := range indexes {
+		c, err := colorFromString(str)
 		if err != nil {
-			return fmt.Errorf("cannot decode color %d : %w", i, err)
+			return fmt.Errorf("cannot decode color %s : %w", str, err)
 		}
-		ps[i].color = c
+		ps[i] = c
 	}
 	return nil
 }
@@ -28,7 +27,7 @@ func (ps Pixels) toPng(out io.Writer, indexes []int, w, h int) error {
 	img := image.NewRGBA(image.Rect(0, 0, w, h))
 	for x := 0; x < w; x++ {
 		for y := 0; y < h; y++ {
-			img.Set(x, y, ps[img[x+w*y]].color)
+			img.Set(x, y, ps[indexes[x+w*y]])
 		}
 	}
 	return png.Encode(out, img)
