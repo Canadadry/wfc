@@ -1,20 +1,13 @@
-package main
+package generateFromMatrix
 
 import (
-	"app/generateFromMatrix"
 	"flag"
 	"fmt"
 	"os"
 	"time"
 )
 
-func main() {
-	if err := run(os.Args[0], os.Args[1:]); err != nil {
-		fmt.Println("failed", err)
-	}
-}
-
-func run(name string, args []string) error {
+func Run(name string, args []string) error {
 	constrainFile := "in.json"
 	outFilename := "out.png"
 	patternSize := 1
@@ -53,7 +46,7 @@ func run(name string, args []string) error {
 		seed = int(time.Now().Unix())
 	}
 
-	err = generateFromMatrix.Process(infile, outfile, patternSize, w, h, seed)
+	err = Process(infile, outfile, patternSize, w, h, seed)
 	if err != nil {
 		return fmt.Errorf("processing image : %w", err)
 	}

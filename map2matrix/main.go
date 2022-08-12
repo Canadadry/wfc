@@ -1,19 +1,12 @@
-package main
+package map2matrix
 
 import (
-	"app/map2matrix"
 	"flag"
 	"fmt"
 	"os"
 )
 
-func main() {
-	if err := run(os.Args[0], os.Args[1:]); err != nil {
-		fmt.Println("failed", err)
-	}
-}
-
-func run(name string, args []string) error {
+func Run(name string, args []string) error {
 	imageFilename := "in.png"
 	outFilename := "out.json"
 	patternSize := 1
@@ -42,7 +35,7 @@ func run(name string, args []string) error {
 	}
 	defer infile.Close()
 
-	err = map2matrix.Process(infile, outfile, patternSize)
+	err = Process(infile, outfile, patternSize)
 	if err != nil {
 		return fmt.Errorf("processing image : %w", err)
 	}
