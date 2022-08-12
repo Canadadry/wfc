@@ -37,6 +37,20 @@ func Process(in io.Reader, out io.Writer, patternSize, w, h, seed int) error {
 		return fmt.Errorf("while loading constraint file :%w", err)
 	}
 
+	indexes, err := generate(c, patternSize, w, h, seed)
+	if err != nil {
+		fmt.Errorf("while generating image : %w", err)
+	}
+
+	ps, err := c.GetPixels()
+	if err != nil {
+		fmt.Errorf("while decoding color indexes : %w", err)
+	}
+
+	return ps.toPng(out, indexes, w, h)
+}
+
+func generate(c Constraint, patternSize, w, h, seed int) ([]int, error) {
 	indexes := make([]int, w*h)
 	written := make([]bool, w*h)
 
@@ -47,18 +61,13 @@ func Process(in io.Reader, out io.Writer, patternSize, w, h, seed int) error {
 			for !ok {
 				p, err := patterns.Pick()
 				if err != nil {
-					return err
+					return nil, err
 				}
 				ok = apply(written, indexes, p, i, j, w, patternSize)
 			}
 		}
 	}
-
-	ps, err := c.GetPixels()
-	if err != nil {
-		fmt.Errorf("while decoding color indexes : %w", err)
-	}
-	return ps.toPng(out, indexes, w, h)
+	return indexes, nil
 }
 
 func apply(written []bool, indexes, patterns []int, x, y, w, patternSize int) bool {
