@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"image"
+	"image/color"
 	_ "image/png"
 	"io"
 )
@@ -27,14 +28,31 @@ func Process(in io.Reader, out io.Writer, patternSize int) error {
 		return fmt.Errorf("while decoding source img %s : %w", format, err)
 	}
 
+	bounds := src.Bounds()
+	w, h := bounds.Max.X, bounds.Max.Y
+
+	result := extract(src, w, h, patternSize)
+
+	enc := json.NewEncoder(out)
+	enc.SetIndent("", "  ")
+	err = enc.Encode(result)
+	if err != nil {
+		return fmt.Errorf("while json encoding result : %w", err)
+	}
+	return nil
+}
+
+type PixelGetter interface {
+	At(x, y int) color.Color
+}
+
+func extract(src PixelGetter, w, h, patternSize int) Result {
 	result := Result{
 		PatternSize: patternSize,
 		Patterns:    map[string]int{},
 	}
 	colorIndex := ColorIndex{}
 
-	bounds := src.Bounds()
-	w, h := bounds.Max.X, bounds.Max.Y
 	for x := 0; x <= (w - patternSize); x++ {
 		for y := 0; y <= (h - patternSize); y++ {
 			colorIndex.Add(src.At(x, y))
@@ -48,12 +66,5 @@ func Process(in io.Reader, out io.Writer, patternSize int) error {
 	}
 
 	result.Index = colorIndex.ToSlice()
-
-	enc := json.NewEncoder(out)
-	enc.SetIndent("", "  ")
-	err = enc.Encode(result)
-	if err != nil {
-		return fmt.Errorf("while json encoding result : %w", err)
-	}
-	return nil
+	return result
 }

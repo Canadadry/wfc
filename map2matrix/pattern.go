@@ -2,12 +2,7 @@ package map2matrix
 
 import (
 	"encoding/json"
-	"image/color"
 )
-
-type PixelGetter interface {
-	At(x, y int) color.Color
-}
 
 func extractPatternAt(src PixelGetter, x, y, patternSize int, ci ColorIndex) Pattern {
 	pixels := make(pattern, patternSize*patternSize)
