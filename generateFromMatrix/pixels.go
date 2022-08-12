@@ -14,7 +14,7 @@ type Pixels map[int]color.RGBA
 
 func (ps Pixels) load(indexes []string) error {
 	for i, str := range indexes {
-		c, err := colorFromString(str)
+		c, err := ColorFromString(str)
 		if err != nil {
 			return fmt.Errorf("cannot decode color %s : %w", str, err)
 		}
@@ -33,7 +33,7 @@ func (ps Pixels) toPng(out io.Writer, indexes []int, w, h int) error {
 	return png.Encode(out, img)
 }
 
-func colorFromString(str string) (color.RGBA, error) {
+func ColorFromString(str string) (color.RGBA, error) {
 	c := [3]int{}
 	err := json.NewDecoder(strings.NewReader(str)).Decode(&c)
 	if err != nil {
