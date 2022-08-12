@@ -57,6 +57,113 @@ func TestExtract(t *testing.T) {
 				},
 			},
 		},
+		"two pixels": {
+			in: FakeImg{
+				Pixels: [][]int{
+					[]int{0, 1},
+				},
+				Colors: map[int]string{
+					0: "[0,0,0]",
+					1: "[1,1,1]",
+				},
+			},
+			w: 2, h: 1, patternSize: 1,
+			out: Result{
+				PatternSize: 1,
+				Index:       []string{"[0,0,0]", "[1,1,1]"},
+				Patterns: map[string]int{
+					"[0]": 1,
+					"[1]": 1,
+				},
+			},
+		},
+		"a 2x2 alternate pixels": {
+			in: FakeImg{
+				Pixels: [][]int{
+					[]int{0, 1},
+					[]int{1, 0},
+				},
+				Colors: map[int]string{
+					0: "[0,0,0]",
+					1: "[1,1,1]",
+				},
+			},
+			w: 2, h: 2, patternSize: 1,
+			out: Result{
+				PatternSize: 1,
+				Index:       []string{"[0,0,0]", "[1,1,1]"},
+				Patterns: map[string]int{
+					"[0]": 2,
+					"[1]": 2,
+				},
+			},
+		},
+		"a 2x2 alternate pixels with pattern size of 2": {
+			in: FakeImg{
+				Pixels: [][]int{
+					[]int{0, 1},
+					[]int{1, 0},
+				},
+				Colors: map[int]string{
+					0: "[0,0,0]",
+					1: "[1,1,1]",
+				},
+			},
+			w: 2, h: 2, patternSize: 2,
+			out: Result{
+				PatternSize: 2,
+				Index:       []string{"[0,0,0]", "[1,1,1]"},
+				Patterns: map[string]int{
+					"[0,1,1,0]": 1,
+				},
+			},
+		},
+		"a 4x4 alternate pixels with pattern size of 2": {
+			in: FakeImg{
+				Pixels: [][]int{
+					[]int{0, 1, 0, 1},
+					[]int{1, 0, 1, 0},
+					[]int{0, 1, 0, 1},
+					[]int{1, 0, 1, 0},
+				},
+				Colors: map[int]string{
+					0: "[0,0,0]",
+					1: "[1,1,1]",
+				},
+			},
+			w: 4, h: 4, patternSize: 2,
+			out: Result{
+				PatternSize: 2,
+				Index:       []string{"[0,0,0]", "[1,1,1]"},
+				Patterns: map[string]int{
+					"[0,1,1,0]": 5,
+					"[1,0,0,1]": 4,
+				},
+			},
+		},
+		"a 4x4 alternate pixels with pattern size of 3": {
+			in: FakeImg{
+				Pixels: [][]int{
+					[]int{0, 1, 0, 1},
+					[]int{1, 0, 1, 0},
+					[]int{0, 1, 0, 1},
+					[]int{1, 0, 1, 0},
+				},
+				Colors: map[int]string{
+					0: "[0,0,0]",
+					1: "[1,1,1]",
+				},
+			},
+			w: 4, h: 4, patternSize: 3,
+			out: Result{
+				PatternSize: 3,
+				Index:       []string{"[0,0,0]", "[1,1,1]"},
+				Patterns: map[string]int{
+					"[0,1,0,1,0,1,0,1,0]": 2,
+					"[1,0,1,0,1,0,1,0,1]": 2,
+				},
+			},
+		},
 	}
 
 	for title, tt := range tests {
