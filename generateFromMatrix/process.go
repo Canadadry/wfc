@@ -81,8 +81,10 @@ func apply(written []bool, indexes, patterns []int, x, y, w, patternSize int) bo
 func canBePlaced(written []bool, indexes, patterns []int, x, y, w, patternSize int) bool {
 	for i := 0; i < patternSize; i++ {
 		for j := 0; j < patternSize; j++ {
-			if written[x+i+(j+i)*w] {
-				if indexes[x+i+(j+i)*w] != patterns[i+j*patternSize] {
+			pos := x + i + (y+j)*w
+			posInP := i + j*patternSize
+			if written[pos] {
+				if indexes[pos] != patterns[posInP] {
 					return false
 				}
 			}
@@ -94,8 +96,12 @@ func canBePlaced(written []bool, indexes, patterns []int, x, y, w, patternSize i
 func update(written []bool, indexes, patterns []int, x, y, w, patternSize int) {
 	for i := 0; i < patternSize; i++ {
 		for j := 0; j < patternSize; j++ {
-			written[x+i+(j+i)*w] = true
-			indexes[x+i+(j+i)*w] = patterns[i+j*patternSize]
+			pos := x + i + (y+j)*w
+			posInP := i + j*patternSize
+			if !written[pos] {
+				written[pos] = true
+				indexes[pos] = patterns[posInP]
+			}
 		}
 	}
 }

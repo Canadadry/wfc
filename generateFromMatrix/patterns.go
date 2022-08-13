@@ -3,6 +3,7 @@ package generateFromMatrix
 import (
 	"encoding/json"
 	"fmt"
+	"sort"
 )
 
 type Patterns struct {
@@ -17,12 +18,16 @@ func (p *Patterns) load(patterns map[string]int) {
 		p.Count = make([]int, len(patterns))
 	}
 
-	i := 0
-	for k, v := range patterns {
-		p.Total = p.Total + v
+	keys := make([]string, 0, len(patterns))
+	for k := range patterns {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	for i, k := range keys {
+		p.Total = p.Total + patterns[k]
 		p.Patterns[i] = k
-		p.Count[i] = v
-		i++
+		p.Count[i] = patterns[k]
 	}
 }
 
@@ -47,7 +52,7 @@ func (p *Patterns) Pick(rand func() float64) ([]int, error) {
 	}
 	ret, err := explode(p.Patterns[i])
 	if err != nil {
-		return ret, err
+		return nil, fmt.Errorf("while exploding pattern '%s' : %w", p.Patterns[i], err)
 	}
 	return ret, p.remove(i)
 }
