@@ -64,14 +64,12 @@ func explode(p string) ([]int, error) {
 }
 
 func (p Patterns) pick(rng float64) (int, error) {
-	// fmt.Println("pick")
 	rng = rng * float64(p.Total)
 	if len(p.Count) == 0 {
 		return 0, fmt.Errorf("nothing left to pick")
 	}
 	current := 0.0
 	for i, c := range p.Count {
-		// fmt.Println(current, p.Total)
 		current = current + float64(c)
 		if current >= rng {
 			return i, nil
