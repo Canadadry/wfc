@@ -116,3 +116,68 @@ func TestCanBePlaced(t *testing.T) {
 		})
 	}
 }
+
+func TestUpdate(t *testing.T) {
+	tests := map[string]struct {
+		writtenBefore, writtenAfter           []bool
+		indexesBefore, indexesAfter, patterns []int
+		x, y, w, patternSize                  int
+	}{
+		"empty 3x3 with 2x2 pattern at origin": {
+			writtenBefore: []bool{false, false, false, false, false, false, false, false, false},
+			writtenAfter:  []bool{true, true, false, true, true, false, false, false, false},
+			indexesBefore: []int{0, 0, 0, 0, 0, 0, 0, 0, 0},
+			indexesAfter:  []int{1, 2, 0, 3, 4, 0, 0, 0, 0},
+			patterns:      []int{1, 2, 3, 4},
+			x:             0,
+			y:             0,
+			w:             3,
+			patternSize:   2,
+		},
+		"non empty 3x3 with 2x2 pattern  at origin": {
+			writtenBefore: []bool{true, false, false, false, false, false, false, false, false},
+			writtenAfter:  []bool{true, true, false, true, true, false, false, false, false},
+			indexesBefore: []int{8, 0, 0, 0, 0, 0, 0, 0, 0},
+			indexesAfter:  []int{8, 2, 0, 3, 4, 0, 0, 0, 0},
+			patterns:      []int{1, 2, 3, 4},
+			x:             0,
+			y:             0,
+			w:             3,
+			patternSize:   2,
+		},
+		"non empty 3x3 with 2x2 pattern at right ": {
+			writtenBefore: []bool{true, false, false, false, false, false, false, false, false},
+			writtenAfter:  []bool{true, true, true, false, true, true, false, false, false},
+			indexesBefore: []int{8, 0, 0, 0, 0, 0, 0, 0, 0},
+			indexesAfter:  []int{8, 1, 2, 0, 3, 4, 0, 0, 0},
+			patterns:      []int{1, 2, 3, 4},
+			x:             1,
+			y:             0,
+			w:             3,
+			patternSize:   2,
+		},
+		"non empty 3x3 with 2x2 pattern at bottom ": {
+			writtenBefore: []bool{true, false, false, false, false, false, false, false, false},
+			writtenAfter:  []bool{true, false, false, true, true, false, true, true, false},
+			indexesBefore: []int{8, 0, 0, 0, 0, 0, 0, 0, 0},
+			indexesAfter:  []int{8, 0, 0, 1, 2, 0, 3, 4, 0},
+			patterns:      []int{1, 2, 3, 4},
+			x:             0,
+			y:             1,
+			w:             3,
+			patternSize:   2,
+		},
+	}
+
+	for title, tt := range tests {
+		t.Run(title, func(t *testing.T) {
+			update(tt.writtenBefore, tt.indexesBefore, tt.patterns, tt.x, tt.y, tt.w, tt.patternSize)
+			if !reflect.DeepEqual(tt.writtenBefore, tt.writtenAfter) {
+				t.Fatalf("written failed got\n %v \nwant\n %v", tt.writtenBefore, tt.writtenAfter)
+			}
+			if !reflect.DeepEqual(tt.indexesBefore, tt.indexesAfter) {
+				t.Fatalf("indexes failed got\n %v \nwant\n %v", tt.indexesBefore, tt.indexesAfter)
+			}
+		})
+	}
+}
