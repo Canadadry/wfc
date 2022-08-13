@@ -1,6 +1,7 @@
 package generateFromMatrix
 
 import (
+	"app/pkg/stack"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -56,6 +57,7 @@ type StepData struct {
 	i, j    int
 	p       Patterns
 }
+
 func (sd StepData) Clone(i, j int) StepData {
 	out := StepData{
 		indexes: make([]int, len(sd.indexes)),
@@ -68,7 +70,9 @@ func (sd StepData) Clone(i, j int) StepData {
 	out.p = sd.p.Clone()
 	return out
 }
+
 func generate(c Constraint, w, h int, rand func() float64) ([]int, error) {
+	s := stack.Stack[StepData]{}
 	sd := StepData{
 		indexes: make([]int, w*h),
 		written: make([]bool, w*h),
@@ -81,10 +85,20 @@ func generate(c Constraint, w, h int, rand func() float64) ([]int, error) {
 			for !ok {
 				p, err := sd.p.Pick(rand)
 				if err != nil {
+					if err == errNothingLeftToPick {
+						sd, hasPop := s.Pop()
+						if !hasPop {
+							return nil, fmt.Errorf("nothing left to pop")
+						}
+						i = sd.i
+						j = sd.j
+						continue
+					}
 					return nil, err
 				}
 				ok = apply(sd.written, sd.indexes, p, i, j, w, c.PatternSize)
 			}
+			s.Push(sd.Clone(i, j))
 			sd.p = c.GetPatterns()
 		}
 	}
