@@ -68,7 +68,7 @@ func (p Patterns) pick(rng float64) (int, error) {
 	for i, c := range p.Count {
 		// fmt.Println(current, p.Total)
 		current = current + float64(c)
-		if current > rng {
+		if current >= rng {
 			return i, nil
 		}
 	}
