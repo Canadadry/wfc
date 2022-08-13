@@ -33,6 +33,17 @@ func (p *Patterns) load(patterns map[string]int) {
 	}
 }
 
+func (p *Patterns) Clone() Patterns {
+	out := Patterns{
+		Patterns: make([]string, len(p.Patterns)),
+		Count:    make([]int, len(p.Count)),
+		Total:    p.Total,
+	}
+	copy(out.Patterns, p.Patterns)
+	copy(out.Count, p.Count)
+	return out
+}
+
 func (p *Patterns) remove(i int) error {
 	if i < 0 || i >= len(p.Patterns) {
 		return fmt.Errorf("remove %d out of bound [0:%d]", i, len(p.Patterns))

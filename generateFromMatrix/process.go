@@ -56,6 +56,18 @@ type StepData struct {
 	i, j    int
 	p       Patterns
 }
+func (sd StepData) Clone(i, j int) StepData {
+	out := StepData{
+		indexes: make([]int, len(sd.indexes)),
+		written: make([]bool, len(sd.written)),
+	}
+	copy(out.indexes, sd.indexes)
+	copy(out.written, sd.written)
+	out.i = i
+	out.j = j
+	out.p = sd.p.Clone()
+	return out
+}
 func generate(c Constraint, w, h int, rand func() float64) ([]int, error) {
 	sd := StepData{
 		indexes: make([]int, w*h),
