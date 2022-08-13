@@ -50,24 +50,33 @@ func Process(in io.Reader, out io.Writer, w, h int, rand func() float64) error {
 	return ps.toPng(out, indexes, w, h)
 }
 
+type StepData struct {
+	indexes []int
+	written []bool
+	i, j    int
+	p       Patterns
+}
 func generate(c Constraint, w, h int, rand func() float64) ([]int, error) {
-	indexes := make([]int, w*h)
-	written := make([]bool, w*h)
+	sd := StepData{
+		indexes: make([]int, w*h),
+		written: make([]bool, w*h),
+		p:       c.GetPatterns(),
+	}
 
 	for i := 0; i <= (w - c.PatternSize); i++ {
 		for j := 0; j <= (h - c.PatternSize); j++ {
 			ok := false
-			patterns := c.GetPatterns()
 			for !ok {
-				p, err := patterns.Pick(rand)
+				p, err := sd.p.Pick(rand)
 				if err != nil {
 					return nil, err
 				}
-				ok = apply(written, indexes, p, i, j, w, c.PatternSize)
+				ok = apply(sd.written, sd.indexes, p, i, j, w, c.PatternSize)
 			}
+			sd.p = c.GetPatterns()
 		}
 	}
-	return indexes, nil
+	return sd.indexes, nil
 }
 
 func apply(written []bool, indexes, patterns []int, x, y, w, patternSize int) bool {
