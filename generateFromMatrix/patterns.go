@@ -3,7 +3,6 @@ package generateFromMatrix
 import (
 	"encoding/json"
 	"fmt"
-	"math/rand"
 )
 
 type Patterns struct {
@@ -40,8 +39,8 @@ func (p *Patterns) remove(i int) error {
 	return nil
 }
 
-func (p *Patterns) Pick() ([]int, error) {
-	rng := rand.Float64()
+func (p *Patterns) Pick(rand func() float64) ([]int, error) {
+	rng := rand()
 	i, err := p.pick(rng)
 	if err != nil {
 		return nil, err

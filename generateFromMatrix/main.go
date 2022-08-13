@@ -3,6 +3,7 @@ package generateFromMatrix
 import (
 	"flag"
 	"fmt"
+	"math/rand"
 	"os"
 	"time"
 )
@@ -13,7 +14,7 @@ func Run(name string, args []string) error {
 	patternSize := 1
 	w := 32
 	h := 24
-	seed := 0
+	var seed int64
 
 	f := flag.NewFlagSet(name, flag.ContinueOnError)
 
@@ -23,7 +24,7 @@ func Run(name string, args []string) error {
 	f.IntVar(&patternSize, "size", patternSize, "size of pattern to extract")
 	f.IntVar(&w, "w", w, "width of generated image")
 	f.IntVar(&h, "h", h, "heght of generated image")
-	f.IntVar(&seed, "seed", seed, "seed for random generator, if 0 use number of second since 1 jan 1970")
+	f.Int64Var(&seed, "seed", seed, "seed for random generator, if 0 use number of second since 1 jan 1970")
 
 	err := f.Parse(args)
 	if err != nil {
@@ -43,10 +44,11 @@ func Run(name string, args []string) error {
 	defer infile.Close()
 
 	if seed == 0 {
-		seed = int(time.Now().Unix())
+		seed = time.Now().Unix()
+		rand.Seed(seed)
 	}
 
-	err = Process(infile, outfile, patternSize, w, h, seed)
+	err = Process(infile, outfile, patternSize, w, h, rand.Float64)
 	if err != nil {
 		return fmt.Errorf("processing image : %w", err)
 	}

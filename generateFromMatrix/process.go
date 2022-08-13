@@ -30,14 +30,14 @@ func load(in io.Reader) (Constraint, error) {
 	return c, err
 }
 
-func Process(in io.Reader, out io.Writer, patternSize, w, h, seed int) error {
+func Process(in io.Reader, out io.Writer, patternSize, w, h int, rand func() float64) error {
 
 	c, err := load(in)
 	if err != nil {
 		return fmt.Errorf("while loading constraint file :%w", err)
 	}
 
-	indexes, err := generate(c, patternSize, w, h, seed)
+	indexes, err := generate(c, patternSize, w, h, rand)
 	if err != nil {
 		fmt.Errorf("while generating image : %w", err)
 	}
@@ -50,7 +50,7 @@ func Process(in io.Reader, out io.Writer, patternSize, w, h, seed int) error {
 	return ps.toPng(out, indexes, w, h)
 }
 
-func generate(c Constraint, patternSize, w, h, seed int) ([]int, error) {
+func generate(c Constraint, patternSize, w, h int, rand func() float64) ([]int, error) {
 	indexes := make([]int, w*h)
 	written := make([]bool, w*h)
 
@@ -59,7 +59,7 @@ func generate(c Constraint, patternSize, w, h, seed int) ([]int, error) {
 			ok := false
 			patterns := c.GetPatterns()
 			for !ok {
-				p, err := patterns.Pick()
+				p, err := patterns.Pick(rand)
 				if err != nil {
 					return nil, err
 				}
